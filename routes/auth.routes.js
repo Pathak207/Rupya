@@ -50,7 +50,7 @@ router.post('/verify-otp', async (req, res) => {
   const { userId, otp, phone } = req.body;
 
   if (!userId || !otp || !phone)
-    return res.status(400).json({ message: 'userId, OTP and phone are required' });
+    return res.status(400).json({ message: 'OTP is required' });
 
   try {
     const user = await User.findById(userId);

@@ -5,6 +5,9 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, unique: true },
   otp: String,
   otpExpiresAt: Date,
+  email: String,     
+  dob: String,       
+  age: String
 });
 
 module.exports = mongoose.model('User', userSchema);
