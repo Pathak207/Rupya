@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: String,
-  phone: { type: String, unique: true },
+  phone: { type: String, required: true, unique: true },
   otp: String,
   otpExpiresAt: Date,
+  isVerified: { type: Boolean, default: false },
+  pin: String,
   email: String,     
   dob: String,       
   age: String
