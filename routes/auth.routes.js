@@ -113,6 +113,7 @@ router.post('/set-pin', async (req, res) => {
 
     res.status(200).json({
       message: 'PIN set successfully',
+      pin,
       token,
     });
 
