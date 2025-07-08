@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/auth.middleware');
 const JWT_SECRET = 'your_secret_key';
  
 
-router.post('/change-pin', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   const { oldPin, newPin, confirmPin } = req.body;
   const userId = req.user.userId;
 
