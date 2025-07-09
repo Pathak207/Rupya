@@ -9,8 +9,8 @@ router.post('/', authMiddleware, async (req, res) => {
   const { pin } = req.body;
   const userId = req.user.userId;
 
-  if (!pin || !/^\d{4}$/.test(pin)) {
-    return res.status(400).json({ message: 'Valid 4-digit PIN is required' });
+  if (!pin || !/^\d{6}$/.test(pin)) {
+    return res.status(400).json({ message: 'Valid 6-digit PIN is required' });
   }
 
   try {

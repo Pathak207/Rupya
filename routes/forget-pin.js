@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 
 const JWT_SECRET = 'your_secret_key';
 
-const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
+const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // 📍 1. Send OTP for Forget PIN
 router.post('/forget/send-otp', async (req, res) => {
@@ -85,8 +85,8 @@ router.post('/forget/set-pin', async (req, res) => {
     return res.status(400).json({ message: 'PINs do not match' });
   }
 
-  if (!/^\d{4}$/.test(newPin)) {
-    return res.status(400).json({ message: 'PIN must be 4 digits' });
+  if (!/^\d{6}$/.test(newPin)) {
+    return res.status(400).json({ message: 'PIN must be 6 digits' });
   }
 
   try {

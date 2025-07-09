@@ -16,8 +16,8 @@ router.post('/', authMiddleware, async (req, res) => {
   if (newPin !== confirmPin)
     return res.status(400).json({ message: 'New PINs do not match' });
 
-  if (!/^\d{4}$/.test(newPin))
-    return res.status(400).json({ message: 'New PIN must be 4 digits' });
+  if (!/^\d{6}$/.test(newPin))
+    return res.status(400).json({ message: 'New PIN must be 6 digits' });
 
   try {
     const user = await User.findById(userId);
