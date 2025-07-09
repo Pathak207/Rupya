@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.routes');
 const profileRoutes = require('./routes/profile.routes');
 const changePinRoutes = require('./routes/changePin.routes');
 const verifyPinRoute = require('./routes/verify-pin');
+const forgetPinRoutes = require('./routes/forget-pin');
 const cors = require('cors');
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/change-pin', changePinRoutes);
 app.use('/api/verify-pin', verifyPinRoute);
+app.use('/api/forget-pin', forgetPinRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
