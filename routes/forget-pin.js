@@ -32,7 +32,7 @@ router.post('/forget/send-otp', async (req, res) => {
     res.status(200).json({
       message: 'OTP sent successfully',
       userId: user._id,
-      phone: user.phone,
+      otp: user.otp,
     });
 
   } catch (err) {
