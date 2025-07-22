@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true, unique: true },
   otp: String,
   otpExpiresAt: Date,
+  fcm_token: String,
   isVerified: { type: Boolean, default: false },
   pin: String,
   email: String,     

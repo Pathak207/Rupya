@@ -6,6 +6,37 @@ const JWT_SECRET = 'your_secret_key';
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./config/firebase-service-account.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+async function sendPushNotification(fcmToken, title, body) {
+  const message = {
+    notification: {
+      title,
+      body,
+    },
+    token: fcmToken,
+  };
+
+  try {
+    const response = await admin.messaging().send(message);
+    console.log('✅ Notification sent:', response);
+  } catch (error) {
+    console.error('❌ Error sending notification:', error);
+  }
+}
+
 
 router.post('/send-otp', async (req, res) => {
   const { phone } = req.body;
@@ -148,7 +179,7 @@ router.post('/check-user', async (req, res) => {
 
 
 router.post('/login', async (req, res) => {
-  const { userId, pin } = req.body;
+  const { userId, pin, fcmToken } = req.body;
 
   if (!userId || !pin)
     return res.status(400).json({ message: 'User ID and PIN are required' });
@@ -164,7 +195,18 @@ router.post('/login', async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: 'PIN is incorrect' });
 
+    if (fcmToken) {
+      user.fcm_token = fcmToken;
+      await user.save();
+    }
+
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+    
+    if (user.fcm_token) {
+      sendPushNotification(user.fcm_token, 'Welcome!',
+  'Login successful. Enjoy using Rupay.');
+    }
 
     res.status(200).json({
       message: 'Login successful',
