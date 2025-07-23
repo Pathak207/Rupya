@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   fcm_token: String,
   isVerified: { type: Boolean, default: false },
   pin: String,
-  email: String,     
+  email: String,
   dob: String,       
   age: String
 });

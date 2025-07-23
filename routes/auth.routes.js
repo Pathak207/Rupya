@@ -8,7 +8,7 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./config/firebase_service_account.json");
+var serviceAccount = require("firebase_service_account.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
