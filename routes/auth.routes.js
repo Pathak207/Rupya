@@ -8,11 +8,28 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("firebase_service_account.json");
+const fs = require('fs');
+const path = require('path');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+const firebaseFilePath = path.join(__dirname, '../firebase_service_account.json');
+
+if (!fs.existsSync(firebaseFilePath)) {
+  const base64 = process.env.FIREBASE_CONFIG_BASE64;
+  if (!base64) {
+    throw new Error("FIREBASE_CONFIG_BASE64 not set in environment variables");
+  }
+  const jsonContent = Buffer.from(base64, 'base64').toString('utf-8');
+  fs.writeFileSync(firebaseFilePath, jsonContent);
+}
+
+const serviceAccount = require(firebaseFilePath);
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
 
 if (!admin.apps.length) {
   admin.initializeApp({
