@@ -137,7 +137,7 @@ router.post('/verify-otp', async (req, res) => {
 const bcrypt = require('bcryptjs');
 
 router.post('/set-pin', async (req, res) => {
-  const { userId, pin, confirmPin } = req.body;
+  const { userId, pin, confirmPin,fcmToken } = req.body;
 
   if (!userId || !pin || !confirmPin)
     return res.status(400).json({ message: 'All fields are required' });
@@ -156,9 +156,18 @@ router.post('/set-pin', async (req, res) => {
 
     user.pin = await bcrypt.hash(pin, 10);
     await user.save();
+   if (fcmToken) {
+      user.fcm_token = fcmToken;
+      await user.save();
+    }
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
+    if (user.fcm_token) {
+      sendPushNotification(user.fcm_token, 'Welcome!',
+  'Login successful. Enjoy using Rupay.');
+    } 
+    
     res.status(200).json({
       message: 'PIN set successfully',
       pin,
