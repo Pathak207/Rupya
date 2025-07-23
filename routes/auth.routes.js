@@ -155,18 +155,16 @@ router.post('/set-pin', async (req, res) => {
       return res.status(400).json({ message: 'User not verified or not found' });
 
     user.pin = await bcrypt.hash(pin, 10);
+    
     if (fcmToken) {
-    user.fcm_token = fcmToken;
-  }
+      user.fcm_token = fcmToken;
+      await user.save();
+      sendPushNotification(user.fcm_token, 'Welcome!', 'PIN set successfully. Enjoy using Rupay.');
+    }
 
-  await user.save();
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-    if (user.fcm_token) {
-      sendPushNotification(user.fcm_token, 'Welcome!',
-  'Login successful. Enjoy using Rupay.');
-    } 
     
     res.status(200).json({
       message: 'PIN set successfully',
