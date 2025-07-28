@@ -15,7 +15,16 @@ const userSchema = new mongoose.Schema({
   wallet: {
     balance: { type: Number, default: 0 }, 
     transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }]
-  }
+  },
+
+  savedPaymentMethods: [
+    {
+      method: { type: String, enum: ['UPI', 'BANK', 'CARD'], required: true },
+      label: { type: String },
+      details: {}
+    }
+  ]
+
 });
 
 module.exports = mongoose.model('User', userSchema);
