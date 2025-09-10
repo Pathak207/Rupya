@@ -9,7 +9,7 @@ exports.sendOtpWithDetails = async (req, res) => {
   const { name, phone, password } = req.body;
 
   if (!name || !phone || !password) {
-    return res.status(400).json({ message: 'Name, phone, and password are required' });
+    return res.status(400).json({ message: 'name, phone, and password are required' });
   }
 
   try {
