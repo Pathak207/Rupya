@@ -30,7 +30,7 @@ router.get('/', authMiddleware, async (req, res) => {
 // ✅ UPDATE Profile
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { name, email, dob, address,aadhar } = req.body;
+    const { name, email, dob, address,aadhar, profileImage } = req.body;
     const user = await User.findById(req.user.userId);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
