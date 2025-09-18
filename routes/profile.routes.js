@@ -16,7 +16,8 @@ router.get('/', authMiddleware, async (req, res) => {
       email: user.email || '',
       dob: user.dob || '',
       address: user.address || '',
-      aadhar: user.aadhar || ''   
+      aadhar: user.aadhar || ''   ,
+      profileImage: user.profileImage || '',
     });
   } catch (err) {
     console.error("❌ GET /profile error:", err);
@@ -39,6 +40,7 @@ router.put('/', authMiddleware, async (req, res) => {
     if (dob) user.dob = dob;
     if (address) user.address = address;
     if (aadhar) user.aadhar = aadhar;
+    if (profileImage) user.profileImage = profileImage;
 
     await user.save();
 
@@ -50,7 +52,9 @@ router.put('/', authMiddleware, async (req, res) => {
         name: user.name,
         email: user.email,
         dob: user.dob,
-        age: user.age,
+        address: user.address,
+        aadhar: user.aadhar,
+        profileImage: user.profileImage,
       }
     });
   } catch (err) {

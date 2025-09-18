@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
   dob: String,
   address: String,
   aadhar: String,
-
+  profileImage: { type: String },
+  
   wallet: {
     balance: { type: Number, default: 0 }, 
     transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }]
