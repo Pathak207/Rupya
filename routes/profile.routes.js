@@ -15,7 +15,8 @@ router.get('/', authMiddleware, async (req, res) => {
       name: user.name || '',
       email: user.email || '',
       dob: user.dob || '',
-      age: user.age || '',      
+      address: user.address || '',
+      aadhar: user.aadhar || ''   
     });
   } catch (err) {
     console.error("❌ GET /profile error:", err);
@@ -28,7 +29,7 @@ router.get('/', authMiddleware, async (req, res) => {
 // ✅ UPDATE Profile
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { name, email, dob, age } = req.body;
+    const { name, email, dob, address,aadhar } = req.body;
     const user = await User.findById(req.user.userId);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -36,7 +37,8 @@ router.put('/', authMiddleware, async (req, res) => {
     if (name) user.name = name;
     if (email) user.email = email;
     if (dob) user.dob = dob;
-    if (age) user.age = age;
+    if (address) user.address = address;
+    if (aadhar) user.aadhar = aadhar;
 
     await user.save();
 

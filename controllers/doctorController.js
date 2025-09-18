@@ -22,7 +22,7 @@ exports.sendOtpWithDetails = async (req, res) => {
     }
 
     const otp = generateOTP();
-    const expiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    const expiry = new Date(Date.now() + 5 * 60 * 1000);
 
     let user;
 
@@ -51,7 +51,7 @@ exports.sendOtpWithDetails = async (req, res) => {
 
     res.status(200).json({
       message: 'OTP sent successfully',
-      otp, // 👈 production में इसे response में मत भेजना
+      otp,
       userId: user._id,
       phone: user.phone,
       name: user.name

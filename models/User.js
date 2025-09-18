@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
   pin: String,
   email: String,
   dob: String,
-  age: String,
+  address: String,
+  aadhar: String,
 
   wallet: {
     balance: { type: Number, default: 0 }, 
