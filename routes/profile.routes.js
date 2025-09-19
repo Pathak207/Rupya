@@ -5,7 +5,6 @@ const path = require('path');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth.middleware');
 
-// ✅ GET Profile
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
@@ -26,6 +25,7 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+
 // ✅ UPDATE Profile
 router.put('/', authMiddleware, async (req, res) => {
   try {
@@ -33,13 +33,11 @@ router.put('/', authMiddleware, async (req, res) => {
     const user = await User.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Update fields
     if (name) user.name = name;
     if (email) user.email = email;
     if (dob) user.dob = dob;
     if (address) user.address = address;
     if (aadhar) user.aadhar = aadhar;
-
     if (profileImage) {
       const buffer = Buffer.from(profileImage, 'base64');
       const uploadsDir = path.join(__dirname, '..', 'uploads');
@@ -48,7 +46,6 @@ router.put('/', authMiddleware, async (req, res) => {
       const fileName = `user_${user._id}_${Date.now()}.png`;
       const filePath = path.join(uploadsDir, fileName);
       fs.writeFileSync(filePath, buffer);
-
      
       const baseUrl = `${req.protocol}://${req.get('host')}`;
       user.profileImage = `${baseUrl}/uploads/${fileName}`;
