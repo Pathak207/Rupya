@@ -4,16 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth.middleware');
- 
 
-
+// ✅ GET Profile
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
-
     if (!user) return res.status(404).json({ message: 'User not found' });
-
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
 
     res.json({
       phone: user.phone,
@@ -22,7 +18,7 @@ router.get('/', authMiddleware, async (req, res) => {
       dob: user.dob || '',
       address: user.address || '',
       aadhar: user.aadhar || '',
-      profileImage: user.profileImage ? `${baseUrl}${user.profileImage}` : '',
+      profileImage: user.profileImage || '',
     });
   } catch (err) {
     console.error("❌ GET /profile error:", err);
@@ -30,17 +26,14 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-
-
-
 // ✅ UPDATE Profile
 router.put('/', authMiddleware, async (req, res) => {
   try {
     const { name, email, dob, address, aadhar, profileImage } = req.body;
     const user = await User.findById(req.user.userId);
-
     if (!user) return res.status(404).json({ message: 'User not found' });
 
+    // Update fields
     if (name) user.name = name;
     if (email) user.email = email;
     if (dob) user.dob = dob;
@@ -51,15 +44,17 @@ router.put('/', authMiddleware, async (req, res) => {
       const buffer = Buffer.from(profileImage, 'base64');
       const uploadsDir = path.join(__dirname, '..', 'uploads');
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+
       const fileName = `user_${user._id}_${Date.now()}.png`;
       const filePath = path.join(uploadsDir, fileName);
       fs.writeFileSync(filePath, buffer);
-      user.profileImage = `/uploads/${fileName}`;
+
+     
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      user.profileImage = `${baseUrl}/uploads/${fileName}`;
     }
 
     await user.save();
-
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
 
     res.json({
       message: 'Profile updated successfully',
@@ -71,7 +66,7 @@ router.put('/', authMiddleware, async (req, res) => {
         dob: user.dob,
         address: user.address,
         aadhar: user.aadhar,
-        profileImage: user.profileImage ? `${baseUrl}${user.profileImage}` : '',
+        profileImage: user.profileImage, 
       }
     });
   } catch (err) {
@@ -79,6 +74,5 @@ router.put('/', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 module.exports = router;
