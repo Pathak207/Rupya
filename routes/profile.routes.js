@@ -41,21 +41,12 @@ router.put('/', authMiddleware, async (req, res) => {
     if (address) user.address = address;
     if (aadhar) user.aadhar = aadhar;
     if (profileImage) {
-      // decode base64
       const buffer = Buffer.from(profileImage, 'base64');
-
-      // create uploads folder if not exists
       const uploadsDir = path.join(__dirname, '..', 'uploads');
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-
-      // filename
       const fileName = `user_${user._id}_${Date.now()}.png`;
       const filePath = path.join(uploadsDir, fileName);
-
-      // save file
       fs.writeFileSync(filePath, buffer);
-
-      // save URL/path in DB (frontend can use server base URL + fileName)
       user.profileImage = `/uploads/${fileName}`;
     }
 
