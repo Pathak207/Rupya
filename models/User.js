@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
   address: String,
   aadhar: String,
   profileImage: { type: String },
+
+  deviceInfo: {
+    deviceId: String,
+    model: String,
+    manufacturer: String,
+  },
   
   wallet: {
     balance: { type: Number, default: 0 }, 

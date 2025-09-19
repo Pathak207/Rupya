@@ -138,6 +138,7 @@ const bcrypt = require('bcryptjs');
 
 router.post('/set-pin', async (req, res) => {
   const { userId, pin, confirmPin,fcmToken} = req.body;
+  const { deviceid, model, manufacturer } = req.headers;
 
   if (!userId || !pin || !confirmPin)
     return res.status(400).json({ message: 'All fields are required' });
@@ -158,10 +159,16 @@ router.post('/set-pin', async (req, res) => {
     
     if (fcmToken) {
       user.fcm_token = fcmToken;
-      await user.save();
       sendPushNotification(user.fcm_token, 'Welcome!', 'PIN set successfully. Enjoy using Rupay.');
     }
+    
+    user.deviceInfo = {
+      deviceId: deviceid,
+      model: model,
+      manufacturer: manufacturer,
+    };
 
+    await user.save();
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
@@ -204,7 +211,7 @@ router.post('/check-user', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { userId, pin, fcmToken } = req.body;
-
+  const { deviceid, model, manufacturer } = req.headers;
   if (!userId || !pin)
     return res.status(400).json({ message: 'User ID and PIN are required' });
 
@@ -219,10 +226,17 @@ router.post('/login', async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: 'PIN is incorrect' });
 
-    if (fcmToken) {
+   if (fcmToken) {
       user.fcm_token = fcmToken;
-      await user.save();
     }
+
+    user.deviceInfo = {
+      deviceId: deviceid,
+      model: model,
+      manufacturer: manufacturer,
+    };
+
+    await user.save();
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
