@@ -13,20 +13,23 @@ router.get('/', authMiddleware, async (req, res) => {
 
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    res.json({      
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+
+    res.json({
       phone: user.phone,
       name: user.name || '',
       email: user.email || '',
       dob: user.dob || '',
       address: user.address || '',
-      aadhar: user.aadhar || ''   ,
-      profileImage: user.profileImage || '',
+      aadhar: user.aadhar || '',
+      profileImage: user.profileImage ? `${baseUrl}${user.profileImage}` : '',
     });
   } catch (err) {
     console.error("❌ GET /profile error:", err);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 
