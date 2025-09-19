@@ -12,7 +12,8 @@ const doctorRoutes = require('./routes/doctorRoutes');
 
 const cors = require('cors');
 
-const app = express();
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 
 connectDB();
