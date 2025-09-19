@@ -33,7 +33,7 @@ router.get('/', authMiddleware, async (req, res) => {
 // ✅ UPDATE Profile
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { name, email, dob, address,aadhar, profileImage } = req.body;
+    const { name, email, dob, address, aadhar, profileImage } = req.body;
     const user = await User.findById(req.user.userId);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -43,6 +43,7 @@ router.put('/', authMiddleware, async (req, res) => {
     if (dob) user.dob = dob;
     if (address) user.address = address;
     if (aadhar) user.aadhar = aadhar;
+
     if (profileImage) {
       const buffer = Buffer.from(profileImage, 'base64');
       const uploadsDir = path.join(__dirname, '..', 'uploads');
@@ -55,6 +56,8 @@ router.put('/', authMiddleware, async (req, res) => {
 
     await user.save();
 
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+
     res.json({
       message: 'Profile updated successfully',
       user: {
@@ -65,7 +68,7 @@ router.put('/', authMiddleware, async (req, res) => {
         dob: user.dob,
         address: user.address,
         aadhar: user.aadhar,
-        profileImage: user.profileImage,
+        profileImage: user.profileImage ? `${baseUrl}${user.profileImage}` : '',
       }
     });
   } catch (err) {
@@ -73,5 +76,6 @@ router.put('/', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router;
