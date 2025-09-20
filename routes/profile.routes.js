@@ -17,7 +17,7 @@ router.get('/', authMiddleware, async (req, res) => {
       dob: user.dob || '',
       address: user.address || '',
       aadhar: user.aadhar || '',
-      profileImage: user.profileImage || '',
+      profileImage: user.profileImage || 'no_image',
     });
   } catch (err) {
     console.error("❌ GET /profile error:", err);
