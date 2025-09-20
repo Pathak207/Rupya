@@ -211,7 +211,7 @@ router.post('/check-user', async (req, res) => {
         savedManufacturer !== manufacturer
       ) {
         return res.status(403).json({
-         message: `This account is already active on another device \n(${savedManufacturer} \n${savedModel}).\n Please logout from there first.`
+         message: `🚫 This account is already active on another device.\n\n📱 Company: ${savedManufacturer}\n🔖 Model: ${savedModel}\n\nPlease logout from that device first.`
         });
       }
     }
