@@ -188,7 +188,8 @@ router.post('/set-pin', async (req, res) => {
 
 
 router.post('/check-user', async (req, res) => {
-  const {phone } = req.body;
+  const { phone } = req.body;
+  const { deviceid, model, manufacturer } = req.headers;
 
   if (!phone)
     return res.status(400).json({ message: 'Phone number is required' });
@@ -200,12 +201,33 @@ router.post('/check-user', async (req, res) => {
       return res.status(404).json({ message: 'User not found. Please sign up first.' });
     }
 
+    
+    if (user.deviceInfo && user.deviceInfo.deviceId) {
+      const { deviceId: savedDeviceId, model: savedModel, manufacturer: savedManufacturer } = user.deviceInfo;
+
+      if (
+        savedDeviceId !== deviceid ||
+        savedModel !== model ||
+        savedManufacturer !== manufacturer
+      ) {
+        return res.status(403).json({
+          message: 'This account is already active on another device. Please logout from there first.',
+          deviceInfo: {
+            model: savedModel,
+            manufacturer: savedManufacturer
+          }
+        });
+      }
+    }
+
+    // Agar deviceInfo empty ho ya match ho gaya ho → phir bhi userId bhejo
     return res.status(200).json({ message: 'User found', userId: user._id });
   } catch (err) {
     console.error('❌ check-user error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 
@@ -254,6 +276,40 @@ router.post('/login', async (req, res) => {
       token,
     });
 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
+// Logout API
+router.post('/logout', async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId)
+    return res.status(400).json({ message: 'User ID is required' });
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (user.fcm_token) {
+      await sendPushNotification(
+        user.fcm_token,
+        'Logout',
+        'You have been logged out successfully.'
+      );
+    }
+
+    user.deviceInfo = null;
+    user.fcm_token = null;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Logout successful and device info cleared' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
