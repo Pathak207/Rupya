@@ -220,7 +220,6 @@ router.post('/check-user', async (req, res) => {
       }
     }
 
-    // Agar deviceInfo empty ho ya match ho gaya ho → phir bhi userId bhejo
     return res.status(200).json({ message: 'User found', userId: user._id });
   } catch (err) {
     console.error('❌ check-user error:', err);
