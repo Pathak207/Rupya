@@ -296,7 +296,6 @@ router.post('/logout', authMiddleware, async (req, res) => {
     }
 
     user.deviceInfo = null;
-    user.fcm_token = null;
 
     await user.save();
 
