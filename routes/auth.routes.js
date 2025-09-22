@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../models/User');
 const JWT_SECRET = 'your_secret_key';
+const authMiddleware = require('../middleware/auth.middleware');
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -280,14 +281,9 @@ router.post('/login', async (req, res) => {
 
 
 // Logout API
-router.post('/logout', async (req, res) => {
-  const { userId } = req.body;
-
-  if (!userId)
-    return res.status(400).json({ message: 'User ID is required' });
-
+router.post('/logout', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(req.user.userId);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -306,7 +302,7 @@ router.post('/logout', async (req, res) => {
 
     res.status(200).json({ message: 'Logout successful and device info cleared' });
   } catch (err) {
-    console.error(err);
+    console.error("❌ POST /logout error:", err);
     res.status(500).json({ message: 'Server error' });
   }
 });
