@@ -10,6 +10,8 @@ const verifyPinRoute = require('./routes/verify-pin');
 const forgetPinRoutes = require('./routes/forget-pin');
 const walletRoutes = require('./routes/walletRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
+const easebuzzRoutes = require('./routes/easebuzz.routes');
+
 const cors = require('cors');
 
 const app = express();
@@ -32,9 +34,10 @@ app.use('/api/verify-pin', verifyPinRoute);
 app.use('/api/forget-pin', forgetPinRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/doctor', doctorRoutes);
+app.use('/api/easebuzz', easebuzzRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
-//
